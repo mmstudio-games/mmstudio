@@ -13,6 +13,13 @@
 - [x] 移除项目协作说明中对仓库外部文档的引用，并在仓库内保留必要规则。
 - [x] 创建包含当前项目基线的初始化提交，不配置远程仓库且不推送。
 - [x] 将 GitHub Actions 的 Bun 安装版本改为 `canary`，移除错误的 `1.4.0` 固定版本声明。
+- [x] 移除 GitHub Pages 部署工作流，建立只执行 Biome 审查和生产构建的 CI。
+- [x] 移除 GitHub Pages 专用的 CNAME 和 `404.html` 构建逻辑，等待托管方案确定。
+- [x] 使用 Biome 替换 Oxlint，并删除旧配置与依赖。
+- [x] 配置2空格缩进、当前 JavaScript/TypeScript 风格和 Tailwind CSS v4 指令解析。
+- [x] 使用 Biome 格式化当前工作区并通过只读审查。
+- [x] 提交 Biome 与纯检查 CI 迁移，并推送至 `origin/main`。
+- [x] 将 Biome 的 JavaScript、TypeScript 和 JSX 引号统一配置为单引号，并重新格式化工作区。
 
 ## P1——主页基础
 
@@ -38,10 +45,10 @@
 ## P2——主页上线准备
 
 - [x] 添加基础主页元信息和规范链接。
-- [x] 添加 GitHub Pages 部署工作流和自定义域名文件。
+- [x] 清理早期 GitHub Pages 部署方案，等待托管平台确定。
 - [ ] 在正式素材可用后添加网站图标和社交分享图片。
 - [ ] 执行并记录无障碍和 Lighthouse 检查。
-- [ ] 部署前确认 `mmstdio.games` 的 DNS 和 GitHub Pages 设置。
+- [ ] 托管平台确定后，确认 `mmstdio.games` 的 DNS 和平台设置。
 
 ## P3——预留页面
 

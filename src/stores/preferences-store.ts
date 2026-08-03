@@ -1,7 +1,7 @@
-import { create } from "zustand"
-import { persist } from "zustand/middleware"
+import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 
-import type { Locale } from "@/i18n"
+import type { Locale } from '@/i18n'
 
 type PreferencesState = {
   locale: Locale
@@ -11,9 +11,9 @@ type PreferencesState = {
 export const usePreferencesStore = create<PreferencesState>()(
   persist(
     (set) => ({
-      locale: "zh-CN",
+      locale: 'zh-CN',
       setLocale: (locale) => set({ locale }),
     }),
-    { name: "mmstudio-preferences" },
+    { name: 'mmstudio-preferences' },
   ),
 )

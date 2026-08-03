@@ -51,7 +51,7 @@ MMStudio 目前没有正式 Logo。在正式 Logo 提供之前，官网只能使
 - `/about` —— 团队资料，内容暂缓
 - `/contact` —— 联系信息，当前不设置表单
 
-在 GitHub Pages 环境中直接访问上述预留路由时，页面仍应能够正常打开。
+托管平台确定后，应保证直接访问上述预留路由时页面仍能正常打开。
 
 ## 5. 主页结构
 
@@ -139,8 +139,9 @@ MMStudio 目前没有正式 Logo。在正式 Logo 提供之前，官网只能使
 - 客户端状态：Zustand，仅用于真正需要跨页面共享的用户偏好
 - 国际化：react-i18next
 - 表单：如未来确有需要，使用 react-hook-form 并结合数据结构校验
-- 托管平台：GitHub Pages
+- 托管平台：待定，当前不绑定 GitHub Pages
 - 自定义域名：`mmstdio.games`
+- 代码格式化与静态审查：Biome
 
 ### 组件规范
 
@@ -160,6 +161,14 @@ MMStudio 目前没有正式 Logo。在正式 Logo 提供之前，官网只能使
 - 静态 `className` 应直接传入 Tailwind 字符串；只有条件类名、多段样式拼接，或较长类名需要按职责分组提高可读性时，才使用 shadcn/ui 提供的 `cn()` 工具函数。
 - 不得使用 `const pagePadding = "..."` 一类变量保存或拼接 Tailwind/CSS 字符串；需要复用或分组的类名应在对应元素的 `cn()` 调用中就地表达，避免样式定义脱离使用位置。
 
+### Biome 规范
+
+- 使用 Biome 统一承担格式化、Lint 和持续集成审查，移除 Oxlint 配置与依赖。
+- 全局缩进使用2个空格，与当前工作区保持一致，不使用 Biome 默认的 Tab 缩进。
+- JavaScript、TypeScript 和 JSX 使用单引号、按需分号和尾随逗号。
+- CSS 格式化必须启用，并开启 `css.parser.tailwindDirectives`，使 Biome 正确解析 Tailwind CSS v4 的 `@theme`、`@apply`、`@custom-variant` 等语法。
+- 本地 `lint` 脚本使用 Biome 检查，另提供可写入的格式化脚本；CI 使用只读检查，不在流水线中自动修改文件。
+
 ### 状态与内容规范
 
 - 不得将路由状态或静态内容放入 Zustand。
@@ -169,12 +178,13 @@ MMStudio 目前没有正式 Logo。在正式 Logo 提供之前，官网只能使
 
 ## 10. 部署与搜索优化
 
-- GitHub Actions 负责构建并发布 `dist` 目录。
-- GitHub Pages 必须支持直接访问客户端路由。
-- `public/CNAME` 必须包含 `mmstdio.games`。
+- 当前 GitHub Actions 只负责安装依赖、Biome 审查和生产构建，不执行任何托管平台部署。
+- 托管平台确定后再设计客户端路由回退和自定义域名接入方式。
 - 主页需要配置规范链接、页面描述、Open Graph 元信息和适当的主题色。
 - 产品图片和社交分享图片必须等到取得正式素材后再添加。
 - GitHub Actions 使用 `oven-sh/setup-bun@v2` 安装 Bun canary；当前项目不得固定为不存在的稳定版 `1.4.0`。
+- 在托管平台最终确定前，不保留 GitHub Pages 上传、权限、环境或部署任务。
+- 在托管平台最终确定前，不生成 GitHub Pages 专用的 `404.html`，也不保留 `public/CNAME`。
 
 ## 11. 版本控制基线
 
@@ -182,6 +192,7 @@ MMStudio 目前没有正式 Logo。在正式 Logo 提供之前，官网只能使
 - 初始化提交只建立本地版本历史，不包含远程仓库配置、推送或部署操作。
 - 默认分支使用 `main`，后续变更应在明确范围内形成可追溯提交。
 - Tailwind 样式架构重构和 Bun canary 工作流修复作为独立提交推送至 `origin/main`，用于同步远程仓库并触发后续持续集成检查。
+- Biome 迁移和纯检查 CI 作为独立提交推送至 `origin/main`，用于验证远程环境中的格式审查与生产构建。
 
 ## 12. 变更控制流程
 

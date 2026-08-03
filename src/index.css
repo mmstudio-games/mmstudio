@@ -56,20 +56,32 @@
 }
 
 @layer base {
-  * { @apply border-border outline-ring/50; }
-  html { @apply scroll-smooth font-sans; }
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply scroll-smooth font-sans;
+  }
   body {
     @apply m-0 min-w-80 bg-background text-foreground antialiased;
   }
-  button:not(:disabled), [role="button"]:not(:disabled) { cursor: pointer; }
-  ::selection { background: oklch(0.48 0.115 38); color: white; }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+  ::selection {
+    background: oklch(0.48 0.115 38);
+    color: white;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     scroll-behavior: auto !important;
-    animation-duration: .01ms !important;
+    animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: .01ms !important;
+    transition-duration: 0.01ms !important;
   }
 }

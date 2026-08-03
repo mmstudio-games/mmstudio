@@ -13,11 +13,13 @@ bun run dev
 
 ```bash
 bun run lint
+bun run lint:fix
+bun run format
 bun run build
 ```
 
-The production build is written to `dist/`. A matching `404.html` is generated for clean client-side routes on GitHub Pages.
+Biome handles formatting and linting. Its configuration uses two-space indentation and enables Tailwind CSS v4 directive parsing. The production build is written to `dist/`.
 
-## Deployment
+## Continuous integration
 
-Pushes to `main` run `.github/workflows/deploy.yml` and publish the site to GitHub Pages. The custom domain is configured through `public/CNAME` as `mmstdio.games`.
+Pushes to `main` and pull requests run `.github/workflows/ci.yml`. The workflow installs dependencies with Bun canary, runs Biome checks, and creates a production build. It does not deploy the website; the hosting platform remains undecided.

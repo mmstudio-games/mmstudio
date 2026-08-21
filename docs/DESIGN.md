@@ -19,7 +19,8 @@
 - 中文名称：**妄言真意**
 - 当前核心产品：**Deadpan / 积案拂尘**
 - 官网域名：**mmstdio.games**
-- GitHub 组织：<https://github.com/Meaningless-Meaning-Studio>
+- GitHub 组织：<https://github.com/mmstudio-games>
+- 官网仓库：<https://github.com/mmstudio-games/mmstudio>
 - 当前游戏站点：<https://deadpan.hydroroll.team/>
 
 MMStudio 目前没有正式 Logo。在正式 Logo 提供之前，官网只能使用纯文字名称，不得自行制作、生成或使用替代 Logo。
@@ -51,13 +52,13 @@ MMStudio 目前没有正式 Logo。在正式 Logo 提供之前，官网只能使
 - `/about` —— 团队资料，内容暂缓
 - `/contact` —— 联系信息，当前不设置表单
 
-托管平台确定后，应保证直接访问上述预留路由时页面仍能正常打开。
+Cloudflare 正式公开入口确定后，应保证直接访问上述预留路由时页面仍能正常打开。
 
 ## 5. 主页结构
 
 主页由以下部分组成：
 
-1. 全局导航：包含 MMStudio 文字标识、产品和动态入口、语言切换及 GitHub 链接。
+1. 全局导航：包含 MMStudio 文字标识、产品和动态入口、语言切换及指向 `mmstudio-games` 组织的 GitHub 链接。
 2. 团队首屏：以 MMStudio 和“妄言真意”名称为主体，不使用虚构 Logo。
 3. 《积案拂尘》核心产品展示：提供直接进入游戏的主要操作。
 4. 三项简洁的设计理念：分别介绍自由盘问、动态案卷和以人为核心的叙事方向。
@@ -124,6 +125,7 @@ MMStudio 目前没有正式 Logo。在正式 Logo 提供之前，官网只能使
 - 必须提供清晰可见的焦点状态。
 - 提供“跳至正文”链接。
 - 纯图标控件必须具有明确的无障碍名称。
+- 跳转链接、导航标签、语言切换和弹层控件等辅助文本必须跟随当前语言，不能只提供英文名称。
 - 正文和关键控件以达到 WCAG AA 对比度为目标。
 - 支持减少动态效果。
 - 使用正确的标题层级和语义化页面区域。
@@ -139,7 +141,7 @@ MMStudio 目前没有正式 Logo。在正式 Logo 提供之前，官网只能使
 - 客户端状态：Zustand，仅用于真正需要跨页面共享的用户偏好
 - 国际化：react-i18next
 - 表单：如未来确有需要，使用 react-hook-form 并结合数据结构校验
-- 托管平台：待定，当前不绑定 GitHub Pages
+- 托管集成：仓库已连接 Cloudflare Workers production build；正式公开入口和自定义域名仍待确认
 - 自定义域名：`mmstdio.games`
 - 代码格式化与静态审查：Biome
 
@@ -166,6 +168,7 @@ MMStudio 目前没有正式 Logo。在正式 Logo 提供之前，官网只能使
 - 使用 Biome 统一承担格式化、Lint 和持续集成审查，移除 Oxlint 配置与依赖。
 - 全局缩进使用2个空格，与当前工作区保持一致，不使用 Biome 默认的 Tab 缩进。
 - JavaScript、TypeScript 和 JSX 使用单引号、按需分号和尾随逗号。
+- Biome 配置中的 schema 版本必须与锁文件实际解析的 CLI 版本一致，避免本地和 CI 出现迁移提示。
 - CSS 格式化必须启用，并开启 `css.parser.tailwindDirectives`，使 Biome 正确解析 Tailwind CSS v4 的 `@theme`、`@apply`、`@custom-variant` 等语法。
 - 本地 `lint` 脚本使用 Biome 检查，另提供可写入的格式化脚本；CI 使用只读检查，不在流水线中自动修改文件。
 
@@ -178,21 +181,23 @@ MMStudio 目前没有正式 Logo。在正式 Logo 提供之前，官网只能使
 
 ## 10. 部署与搜索优化
 
-- 当前 GitHub Actions 只负责安装依赖、Biome 审查和生产构建，不执行任何托管平台部署。
-- 托管平台确定后再设计客户端路由回退和自定义域名接入方式。
-- 主页需要配置规范链接、页面描述、Open Graph 元信息和适当的主题色。
+- 仓库内的 GitHub Actions 只负责安装依赖、Biome 审查和生产构建，不执行部署；仓库外部已连接 Cloudflare Workers production build 集成。
+- `mmstdio.games` 当前尚未完成 DNS 和公开入口验证；在获得明确授权前，不修改 Cloudflare、DNS 或部署状态。
+- Cloudflare 的正式公开入口确定后，必须验证客户端路由回退，保证直接访问预留路由可用。
+- 主页需要配置规范链接、页面描述、Open Graph 元信息和适当的主题色；切换语言时，页面标题、描述和 Open Graph 标题与描述应同步更新。
 - 产品图片和社交分享图片必须等到取得正式素材后再添加。
 - GitHub Actions 使用 `oven-sh/setup-bun@v2` 安装 Bun canary；当前项目不得固定为不存在的稳定版 `1.4.0`。
-- 在托管平台最终确定前，不保留 GitHub Pages 上传、权限、环境或部署任务。
-- 在托管平台最终确定前，不生成 GitHub Pages 专用的 `404.html`，也不保留 `public/CNAME`。
+- 仓库文件中不保留 GitHub Pages 上传、权限、环境或部署任务；GitHub 仓库设置中残留的历史 `github-pages` environment 待获得外部状态变更授权后清理。
+- 不生成 GitHub Pages 专用的 `404.html`，也不保留 `public/CNAME`。
 
 ## 11. 版本控制基线
 
 - 当前可运行的主页、项目规范文档、依赖锁文件和部署准备文件应作为仓库的初始化基线统一提交。
 - 初始化提交只建立本地版本历史，不包含远程仓库配置、推送或部署操作。
 - 默认分支使用 `main`，后续变更应在明确范围内形成可追溯提交。
-- Tailwind 样式架构重构和 Bun canary 工作流修复作为独立提交推送至 `origin/main`，用于同步远程仓库并触发后续持续集成检查。
-- Biome 迁移和纯检查 CI 作为独立提交推送至 `origin/main`，用于验证远程环境中的格式审查与生产构建。
+- 规范远程仓库为 `https://github.com/mmstudio-games/mmstudio`；旧的 `Meaningless-Meaning-Studio/mmstudio` 地址只作为 GitHub 重定向存在，不再写入配置或页面链接。
+- Tailwind 样式架构重构和 Bun canary 工作流修复已作为独立提交推送至 `origin/main`，用于同步远程仓库并触发后续持续集成检查。
+- Biome 迁移和纯检查 CI 已作为独立提交推送至 `origin/main`，用于验证远程环境中的格式审查与生产构建。
 
 ## 12. 变更控制流程
 

@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 
 import '@/i18n'
 import '@/index.css'
-import App from '@/App'
+import App from '@/app-root'
 
 const rootElement = document.getElementById('root')
 

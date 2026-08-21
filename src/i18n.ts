@@ -7,6 +7,21 @@ const resources = {
   'zh-CN': {
     translation: {
       nav: { home: '首页', deadpan: '积案拂尘', news: '动态', github: 'GitHub' },
+      meta: {
+        title: 'MMStudio · 妄言真意',
+        description: 'MMStudio（妄言真意）是一家独立游戏工作室，核心产品为 AI 悬疑盘问游戏《积案拂尘 / Deadpan》。',
+        ogTitle: 'MMStudio · 妄言真意',
+        ogDescription: 'Meaningless words. Meaningful choices.《积案拂尘 / Deadpan》开发团队。',
+      },
+      a11y: {
+        skipToContent: '跳至正文',
+        home: 'MMStudio 首页',
+        primaryNavigation: '主导航',
+        switchLanguage: '切换至英文',
+        github: 'MMStudio GitHub',
+        openNavigation: '打开导航',
+        closeNavigation: '关闭导航',
+      },
       hero: {
         eyebrow: 'MMSTUDIO · 独立游戏工作室',
         titleA: '妄言',
@@ -56,6 +71,21 @@ const resources = {
   en: {
     translation: {
       nav: { home: 'Home', deadpan: 'Deadpan', news: 'News', github: 'GitHub' },
+      meta: {
+        title: 'MMStudio · MeaninglessMeaningStudio',
+        description: 'MMStudio is an independent game studio and the team behind the AI-driven mystery game Deadpan.',
+        ogTitle: 'MMStudio · MeaninglessMeaningStudio',
+        ogDescription: 'Meaningless words. Meaningful choices. The development team behind Deadpan.',
+      },
+      a11y: {
+        skipToContent: 'Skip to content',
+        home: 'MMStudio home',
+        primaryNavigation: 'Primary navigation',
+        switchLanguage: 'Switch to Chinese',
+        github: 'MMStudio GitHub',
+        openNavigation: 'Open navigation',
+        closeNavigation: 'Close navigation',
+      },
       hero: {
         eyebrow: 'MMSTUDIO · INDEPENDENT GAME STUDIO',
         titleA: 'MEANINGLESS',

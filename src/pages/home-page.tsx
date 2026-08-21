@@ -149,7 +149,7 @@ export function HomePage() {
           </h2>
           <p className='max-w-[42rem] leading-[1.8] text-[#ebe0c8]/70'>{t('signal.body')}</p>
           <a
-            href='https://github.com/Meaningless-Meaning-Studio'
+            href='https://github.com/mmstudio-games'
             target='_blank'
             rel='noreferrer'
             className='mt-12 flex w-fit items-center gap-2 border-b border-current pb-[.35rem] text-[.72rem] font-bold tracking-[.14em] text-inherit uppercase no-underline'

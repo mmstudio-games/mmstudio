@@ -14,14 +14,32 @@ const navItems = [
   ['/news', 'nav.news'],
 ] as const
 
+function setMetaContent(selector: string, content: string) {
+  document.querySelector<HTMLMetaElement>(selector)?.setAttribute('content', content)
+}
+
 export function SiteLayout() {
   const { t, i18n } = useTranslation()
   const locale = usePreferencesStore((state) => state.locale)
   const setLocale = usePreferencesStore((state) => state.setLocale)
 
   useEffect(() => {
-    void i18n.changeLanguage(locale)
-    document.documentElement.lang = locale
+    let cancelled = false
+
+    void i18n.changeLanguage(locale).then(() => {
+      if (cancelled) return
+
+      const translate = i18n.getFixedT(locale)
+      document.documentElement.lang = locale
+      document.title = translate('meta.title')
+      setMetaContent('meta[name="description"]', translate('meta.description'))
+      setMetaContent('meta[property="og:title"]', translate('meta.ogTitle'))
+      setMetaContent('meta[property="og:description"]', translate('meta.ogDescription'))
+    })
+
+    return () => {
+      cancelled = true
+    }
   }, [i18n, locale])
 
   const toggleLocale = () => setLocale(locale === 'zh-CN' ? 'en' : 'zh-CN')
@@ -32,18 +50,18 @@ export function SiteLayout() {
         className='fixed -top-16 left-4 z-[100] bg-primary px-4 py-3 text-primary-foreground focus:top-4'
         href='#main-content'
       >
-        Skip to content
+        {t('a11y.skipToContent')}
       </a>
       <header className='sticky top-0 z-50 grid h-[72px] grid-cols-[1fr_auto] items-center border-b border-border bg-background/90 px-[clamp(1.25rem,4vw,4.5rem)] backdrop-blur-[14px] md:grid-cols-[1fr_auto_1fr]'>
         <Link
           to='/'
           className='flex w-fit items-baseline font-heading leading-none text-inherit no-underline'
-          aria-label='MMStudio home'
+          aria-label={t('a11y.home')}
         >
           <span className='text-[1.65rem] font-semibold tracking-[-.1em]'>MM</span>
           <span className='ml-[.45rem] font-sans text-[.58rem] font-bold tracking-[.22em]'>STUDIO</span>
         </Link>
-        <nav className='hidden items-center gap-8 md:flex' aria-label='Primary navigation'>
+        <nav className='hidden items-center gap-8 md:flex' aria-label={t('a11y.primaryNavigation')}>
           {navItems.map(([to, label]) => (
             <NavLink
               key={to}
@@ -60,7 +78,7 @@ export function SiteLayout() {
           ))}
         </nav>
         <div className='flex items-center justify-self-end gap-1'>
-          <Button variant='ghost' size='sm' onClick={toggleLocale} aria-label='Switch language'>
+          <Button variant='ghost' size='sm' onClick={toggleLocale} aria-label={t('a11y.switchLanguage')}>
             {locale === 'zh-CN' ? 'EN' : '中文'}
           </Button>
           <Button
@@ -69,10 +87,10 @@ export function SiteLayout() {
             nativeButton={false}
             render={
               <a
-                href='https://github.com/Meaningless-Meaning-Studio'
+                href='https://github.com/mmstudio-games'
                 target='_blank'
                 rel='noreferrer'
-                aria-label='MMStudio GitHub'
+                aria-label={t('a11y.github')}
               />
             }
           >
@@ -82,14 +100,18 @@ export function SiteLayout() {
             <SheetTrigger
               className='md:hidden'
               render={
-                <Button variant='ghost' size='icon-sm' aria-label='Open navigation'>
+                <Button variant='ghost' size='icon-sm' aria-label={t('a11y.openNavigation')}>
                   <Menu />
                 </Button>
               }
             />
-            <SheetContent side='right' className='border-l-border bg-background p-8'>
+            <SheetContent
+              side='right'
+              closeLabel={t('a11y.closeNavigation')}
+              className='border-l-border bg-background p-8'
+            >
               <SheetTitle className='font-heading text-2xl uppercase'>MMStudio</SheetTitle>
-              <nav className='mt-16 flex flex-col gap-8'>
+              <nav className='mt-16 flex flex-col gap-8' aria-label={t('a11y.primaryNavigation')}>
                 {navItems.map(([to, label]) => (
                   <SheetClose
                     key={to}

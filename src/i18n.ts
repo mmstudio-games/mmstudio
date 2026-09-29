@@ -38,7 +38,7 @@ const resources = {
         backToTop: '回到顶部',
         external: '（在新窗口打开）',
       },
-      intro: { loading: '正在调取卷宗' },
+      intro: { room: '暗室', developing: '显影中', count: '显影' },
       hero: {
         eyebrow: 'MMSTUDIO · 独立游戏工作室',
         srTitle: 'MMStudio · 妄言真意',
@@ -237,7 +237,7 @@ const resources = {
         backToTop: 'Back to top',
         external: '(opens in a new tab)',
       },
-      intro: { loading: 'Retrieving case files' },
+      intro: { room: 'Darkroom', developing: 'Developing', count: 'Developed' },
       hero: {
         eyebrow: 'MMSTUDIO · INDEPENDENT GAME STUDIO',
         srTitle: 'MMStudio · MeaninglessMeaningStudio',

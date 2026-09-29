@@ -89,8 +89,6 @@ html[data-stage="deadpan"] {
   --animate-flap: flap 0.14s var(--ease-out-expo);
   --animate-blink: blink 1.1s steps(1) infinite;
   --animate-scroll-cue: scroll-cue 1.8s var(--ease-in-out-quart) infinite;
-  --animate-flip-shade: flip-shade 1.1s var(--ease-in-out-quart);
-  --animate-folder-bend: folder-bend 1.1s var(--ease-in-out-quart);
 }
 
 /* 调查桌物件的悬停抬起量：注册为数值后，抬起、缩放、倾角与阴影可以一起过渡。 */
@@ -98,74 +96,6 @@ html[data-stage="deadpan"] {
   syntax: "<number>";
   inherits: true;
   initial-value: 0;
-}
-
-/* 案卷夹翻开时：转到侧面最暗，并带一点纸板弯曲。 */
-@keyframes flip-shade {
-  0%,
-  100% {
-    opacity: 0;
-  }
-  50% {
-    opacity: 0.5;
-  }
-}
-
-@keyframes folder-bend {
-  0%,
-  100% {
-    transform: none;
-  }
-  45% {
-    transform: skewY(-2.2deg) scaleX(0.985);
-  }
-}
-
-@keyframes scroll-cue {
-  from {
-    transform: translateY(-100%);
-  }
-  to {
-    transform: translateY(200%);
-  }
-}
-
-@keyframes grain {
-  0% {
-    transform: translate(0, 0);
-  }
-  20% {
-    transform: translate(-6%, 4%);
-  }
-  40% {
-    transform: translate(5%, -7%);
-  }
-  60% {
-    transform: translate(-3%, 8%);
-  }
-  80% {
-    transform: translate(7%, 2%);
-  }
-  100% {
-    transform: translate(-4%, -5%);
-  }
-}
-
-@keyframes flap {
-  from {
-    transform: rotateX(-88deg);
-    filter: brightness(1.8);
-  }
-  to {
-    transform: rotateX(0);
-    filter: brightness(1);
-  }
-}
-
-@keyframes blink {
-  50% {
-    opacity: 0;
-  }
 }
 
 @layer base {

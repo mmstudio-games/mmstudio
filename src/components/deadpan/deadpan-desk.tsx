@@ -302,16 +302,190 @@ function StringTie() {
   )
 }
 
+const SPLIT = 0.55
+
+/**
+ * 封面的一段：只显示整张封面画面中属于自己的那一条。
+ * 正面按从左到右切分；内侧翻过来后左右镜像，所以切分方向相反。
+ */
+function CoverFace({
+  side,
+  segment,
+  children,
+}: {
+  side: 'front' | 'back'
+  segment: 'spine' | 'edge'
+  children: ReactNode
+}) {
+  const share = segment === 'spine' ? SPLIT : 1 - SPLIT
+  const offset =
+    side === 'front' ? (segment === 'spine' ? 0 : SPLIT / (1 - SPLIT)) : segment === 'spine' ? (1 - SPLIT) / SPLIT : 0
+  // 靠书脊的一段向接缝多伸 1px 并被外段盖住，消除分数像素接缝处的亮线；画面仍按原宽度换算，不会错位。
+  const base = segment === 'spine' ? '(100% - 1px)' : '100%'
+  return (
+    <span
+      className={cn(
+        'absolute inset-y-0 left-0 block overflow-hidden text-left text-[#17120d] [backface-visibility:hidden]',
+        segment === 'spine' ? '-right-px' : 'right-0',
+        side === 'back' && '[transform:rotateY(180deg)]',
+      )}
+    >
+      <span
+        className='absolute inset-y-0 block'
+        style={{ width: `calc(${base} * ${1 / share})`, left: `calc(${base} * ${-offset})` }}
+      >
+        {children}
+      </span>
+      <span data-shade={side} className='pointer-events-none absolute inset-0 bg-black opacity-0' />
+    </span>
+  )
+}
+
+/** 封面正面的完整画面。 */
+function CoverFront() {
+  const { t } = useTranslation()
+  const zh = usePreferencesStore((state) => state.locale) === 'zh-CN'
+  return (
+    <>
+      <Surface
+        texture='cardboard'
+        tint='#e3c186'
+        aged={0.3}
+        className='size-full shadow-[inset_-1.5px_0_0_rgba(255,238,200,.6),inset_0_-1px_0_rgba(90,55,20,.4)]'
+        clip={cutBottomRight('9cqw')}
+      >
+        {/* 书脊压线、手摸发暗的开口边、咖啡杯印 */}
+        <span className='absolute inset-y-0 left-[5cqw] w-[2px] bg-[linear-gradient(90deg,rgba(80,50,20,.4),rgba(255,240,210,.5))]' />
+        <span className='absolute inset-y-0 right-0 w-[20%] bg-[linear-gradient(to_left,rgba(70,40,15,.3),transparent)] mix-blend-multiply' />
+        <span className='absolute inset-x-0 bottom-0 h-[14%] bg-[linear-gradient(to_top,rgba(70,40,15,.22),transparent)] mix-blend-multiply' />
+        <span
+          className='absolute top-[58%] left-[44%] size-[30cqw] rotate-[24deg] rounded-full mix-blend-multiply [filter:url(#dp-rough)]'
+          style={{
+            background:
+              'radial-gradient(circle, transparent 60%, rgba(110,62,20,.2) 63%, rgba(110,62,20,.06) 66%, transparent 68%)',
+            maskImage:
+              'conic-gradient(from 20deg, #000 0deg, rgba(0,0,0,.35) 90deg, #000 150deg, rgba(0,0,0,.15) 230deg, transparent 280deg, rgba(0,0,0,.6) 330deg, #000 360deg)',
+            WebkitMaskImage:
+              'conic-gradient(from 20deg, #000 0deg, rgba(0,0,0,.35) 90deg, #000 150deg, rgba(0,0,0,.15) 230deg, transparent 280deg, rgba(0,0,0,.6) 330deg, #000 360deg)',
+          }}
+        />
+
+        {/* 记号笔写的编号 */}
+        <span className='absolute top-[4.5%] left-[10%] rotate-[-4deg] font-hand text-[8cqw] leading-none text-[#1d1d26]/85 [filter:url(#dp-type)]'>
+          N°001
+        </span>
+
+        {/* 标签贴：一角翘起，胶边发黄 */}
+        <span className='absolute top-[15%] right-[11%] left-[10%] block rotate-[-.6deg] drop-shadow-[0_1px_1.5px_rgba(40,20,5,.3)]'>
+          <Surface texture='fine' tint='#f3ead6' aged={0.22} clip={cutTopRight('5cqw')}>
+            <span className='absolute inset-0 border border-[#c9a55a]/35' />
+            <span className='flex flex-col items-center gap-[2cqw] px-[5cqw] py-[5cqw] text-center [filter:url(#dp-type)]'>
+              <span className='font-mono text-[2.3cqw] tracking-[.24em] uppercase'>{t('dp.hero.office')}</span>
+              <span className='block h-px w-full bg-[#17120d]' />
+              <span
+                className={cn(
+                  'block leading-[1]',
+                  zh
+                    ? 'font-serif-sc text-[15cqw] font-black tracking-[.04em]'
+                    : 'font-heading text-[13.6cqw] font-semibold tracking-[-.02em]',
+                )}
+              >
+                {t('deadpan.name')}
+              </span>
+              <span className='font-heading text-[3.6cqw] tracking-[.5em]'>{t('deadpan.english')}</span>
+              <span className='block h-[4px] w-full border-y border-[#17120d]' />
+              <span className='font-mono text-[2.3cqw] tracking-[.2em]'>CASE FILE 001—2026</span>
+            </span>
+          </Surface>
+          <FoldedCorner corner='top-right' size='5cqw' tint='#e9dcc0' />
+        </span>
+
+        {/* 机密章：缺墨斑驳 */}
+        <span
+          className='absolute bottom-[13%] left-[10%] rotate-[-8deg] border-[0.8cqw] px-[2.4cqw] py-[1cqw] font-serif-sc text-[6.4cqw] font-black tracking-[.2em] opacity-90 mix-blend-multiply [filter:url(#dp-ink)]'
+          style={{ borderColor: RED, color: RED }}
+        >
+          机密
+        </span>
+
+        <StringTie />
+      </Surface>
+      <FoldedCorner corner='bottom-right' size='9cqw' tint='#efd49e' />
+    </>
+  )
+}
+
+/** 封面内侧的完整画面。 */
+function CoverBack() {
+  const { t } = useTranslation()
+  return (
+    <Surface texture='cardboard' tint='#d6b173' aged={0.34} className='size-full'>
+      <span className='absolute top-[10%] left-[12%] rotate-[-6deg] border-[0.6cqw] border-[#842219]/60 px-[2cqw] py-[1cqw] font-serif-sc text-[3.6cqw] font-bold tracking-[.2em] text-[#842219]/60 [filter:url(#dp-ink)]'>
+        {t('dp.hero.office')}
+      </span>
+      <span className='absolute right-[6%] bottom-[5%] font-mono text-[2.6cqw] tracking-[.2em] text-[#17120d]/60 uppercase'>
+        ← {t('dp.desk.close')}
+      </span>
+    </Surface>
+  )
+}
+
 /** 案卷夹：双层卡纸，后片带标签；开口一侧露出内页纸边；封面沿书脊翻开，内页是开卷目录。 */
 function CaseFolder({ revealed, onReveal }: { revealed: boolean; onReveal: () => void }) {
   const { t } = useTranslation()
-  const zh = usePreferencesStore((state) => state.locale) === 'zh-CN'
+  const reduced = useReducedMotion()
   const [open, setOpen] = useState(false)
-  const [flips, setFlips] = useState(0)
+  // 合上的动画结束前一直保持在最上层，避免摆回来的封面被批注等压住。
+  const [raised, setRaised] = useState(false)
+  const hinge = useRef<HTMLButtonElement>(null)
+  const flap = useRef<HTMLSpanElement>(null)
+  const flight = useRef<gsap.core.Timeline | null>(null)
+
+  useEffect(() => () => void flight.current?.kill(), [])
+
+  /** 按两段封面各自的角度设置明暗：转到侧面最暗，平放时恢复。 */
+  const shade = () => {
+    const a = hinge.current
+    const b = flap.current
+    if (!a || !b) return
+    const spine = Number(gsap.getProperty(a, 'rotationY'))
+    const edge = spine + Number(gsap.getProperty(b, 'rotationY'))
+    const dim = (deg: number) => (Math.abs(Math.sin((deg * Math.PI) / 180)) * 0.55).toFixed(3)
+    for (const face of a.querySelectorAll<HTMLElement>(':scope > span > [data-shade]')) face.style.opacity = dim(spine)
+    for (const face of b.querySelectorAll<HTMLElement>(':scope > span > [data-shade]')) face.style.opacity = dim(edge)
+  }
 
   const toggle = () => {
-    setOpen((value) => !value)
-    setFlips((value) => value + 1)
+    const a = hinge.current
+    const b = flap.current
+    if (!a || !b) return
+    const next = !open
+    setOpen(next)
+    if (next) setRaised(true)
+    flight.current?.kill()
+    if (reduced) {
+      gsap.set(a, { rotationY: next ? -170 : 0 })
+      gsap.set(b, { rotationY: 0 })
+      shade()
+      if (!next) setRaised(false)
+      return
+    }
+    // 掀起一点 → 加速翻过去 → 落桌轻弹；外段先滞后弯起、再追上、最后拉直。
+    const direction = next ? -1 : 1
+    const timeline = gsap.timeline({
+      onUpdate: shade,
+      onComplete: () => {
+        if (!next) setRaised(false)
+      },
+    })
+    timeline
+      .to(a, { rotationY: next ? -12 : -158, duration: 0.24, ease: 'power2.out' })
+      .to(a, { rotationY: next ? -176 : 3, duration: 0.9, ease: 'power3.inOut' })
+      .to(a, { rotationY: next ? -170 : 0, duration: 0.5, ease: 'back.out(2.6)' })
+      .to(b, { rotationY: -direction * 28, duration: 0.46, ease: 'power2.out' }, 0.08)
+      .to(b, { rotationY: direction * 7, duration: 0.5, ease: 'power2.inOut' }, 0.54)
+      .to(b, { rotationY: 0, duration: 0.5, ease: 'power2.out' }, 1.04)
+    flight.current = timeline
   }
 
   return (
@@ -319,17 +493,34 @@ function CaseFolder({ revealed, onReveal }: { revealed: boolean; onReveal: () =>
       data-depth={0.5}
       className={cn(
         '@container absolute top-[4%] left-[5%] w-[90%] will-change-transform md:top-[7%] md:left-[21%] md:w-[min(36%,calc((100svh-200px)*.72))]',
-        open ? 'z-30' : 'z-20',
+        raised ? 'z-30' : 'z-20',
       )}
     >
       <div
         className={cn(
           'relative aspect-[.8] w-full transition-[--lift,rotate] duration-700 ease-out-expo [perspective:2200px]',
-          revealed && !open && 'hover:[--lift:.6]',
-          open ? 'rotate-0' : 'rotate-[-2deg]',
+          revealed && !raised && 'hover:[--lift:.6]',
+          raised ? 'rotate-0' : 'rotate-[-2deg]',
         )}
-        style={{ filter: SHADOW, translate: '0 calc(var(--lift) * -7px)' }}
+        style={{ translate: '0 calc(var(--lift) * -7px)' }}
       >
+        {/* 阴影单独一层：不再用滤镜包住会翻动的封面，翻页时不必逐帧重算滤镜。 */}
+        <span
+          aria-hidden
+          className='absolute inset-x-0 -top-[7cqw] bottom-0'
+          style={{
+            boxShadow:
+              'calc(var(--sx, 3) * .16px) calc(var(--sy, 5) * .16px) 2px rgba(20,10,4,.55), calc(var(--sx, 3) * (1px + var(--lift) * 1.4px)) calc(var(--sy, 5) * (1px + var(--lift) * 1.4px)) calc(12px + var(--lift) * 18px) rgba(20,10,4,.45)',
+          }}
+        />
+        {/* 翻开后平放在桌上的封面投下的影子 */}
+        <span
+          aria-hidden
+          className={cn(
+            'absolute inset-y-[1%] right-full w-[97%] shadow-[-6px_10px_22px_rgba(20,10,4,.45)] transition-opacity duration-500',
+            open ? 'opacity-100 delay-700' : 'opacity-0',
+          )}
+        />
         {/* 后片：比前片高一截，标签长在后片上 */}
         <Surface
           texture='cardboard'
@@ -425,8 +616,9 @@ function CaseFolder({ revealed, onReveal }: { revealed: boolean; onReveal: () =>
           </Surface>
         </div>
 
-        {/* 封面：正反两面，沿书脊翻开 */}
+        {/* 封面：分两段（靠书脊 55% + 外侧 45%），翻动时外段滞后，像卡纸一样弯起 */}
         <button
+          ref={hinge}
           type='button'
           aria-expanded={open}
           aria-label={open ? t('dp.desk.close') : `${t('dp.hero.stamp')} · ${t('deadpan.name')}`}
@@ -434,100 +626,26 @@ function CaseFolder({ revealed, onReveal }: { revealed: boolean; onReveal: () =>
           onFocus={onReveal}
           onClick={toggle}
           className={cn(
-            'absolute inset-0 origin-left transition-transform duration-[1100ms] ease-in-out-quart [transform-style:preserve-3d] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent',
+            'absolute inset-y-0 left-0 w-[55%] origin-left will-change-transform [transform-style:preserve-3d] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent',
             !revealed && 'pointer-events-none',
           )}
-          style={{ transform: open ? 'rotateY(-168deg)' : 'rotateY(0deg)' }}
         >
+          <CoverFace side='front' segment='spine'>
+            <CoverFront />
+          </CoverFace>
+          <CoverFace side='back' segment='spine'>
+            <CoverBack />
+          </CoverFace>
           <span
-            key={flips}
-            className={cn('absolute inset-0 block [transform-style:preserve-3d]', flips > 0 && 'animate-folder-bend')}
+            ref={flap}
+            className='absolute inset-y-0 left-full w-[calc(100%*45/55)] origin-left will-change-transform [transform-style:preserve-3d]'
           >
-            {/* 封面正面 */}
-            <span className='absolute inset-0 block text-left text-[#17120d] [backface-visibility:hidden]'>
-              <Surface
-                texture='cardboard'
-                tint='#e3c186'
-                aged={0.3}
-                className='size-full shadow-[inset_-1.5px_0_0_rgba(255,238,200,.6),inset_0_-1px_0_rgba(90,55,20,.4)]'
-                clip={cutBottomRight('9cqw')}
-              >
-                {/* 书脊压线、手摸发暗的开口边、咖啡杯印 */}
-                <span className='absolute inset-y-0 left-[5cqw] w-[2px] bg-[linear-gradient(90deg,rgba(80,50,20,.4),rgba(255,240,210,.5))]' />
-                <span className='absolute inset-y-0 right-0 w-[20%] bg-[linear-gradient(to_left,rgba(70,40,15,.3),transparent)] mix-blend-multiply' />
-                <span className='absolute inset-x-0 bottom-0 h-[14%] bg-[linear-gradient(to_top,rgba(70,40,15,.22),transparent)] mix-blend-multiply' />
-                <span
-                  className='absolute top-[58%] left-[44%] size-[30cqw] rotate-[24deg] rounded-full mix-blend-multiply [filter:url(#dp-rough)]'
-                  style={{
-                    background:
-                      'radial-gradient(circle, transparent 60%, rgba(110,62,20,.2) 63%, rgba(110,62,20,.06) 66%, transparent 68%)',
-                    maskImage:
-                      'conic-gradient(from 20deg, #000 0deg, rgba(0,0,0,.35) 90deg, #000 150deg, rgba(0,0,0,.15) 230deg, transparent 280deg, rgba(0,0,0,.6) 330deg, #000 360deg)',
-                    WebkitMaskImage:
-                      'conic-gradient(from 20deg, #000 0deg, rgba(0,0,0,.35) 90deg, #000 150deg, rgba(0,0,0,.15) 230deg, transparent 280deg, rgba(0,0,0,.6) 330deg, #000 360deg)',
-                  }}
-                />
-
-                {/* 记号笔写的编号 */}
-                <span className='absolute top-[4.5%] left-[10%] rotate-[-4deg] font-hand text-[8cqw] leading-none text-[#1d1d26]/85 [filter:url(#dp-type)]'>
-                  N°001
-                </span>
-
-                {/* 标签贴：一角翘起，胶边发黄 */}
-                <span className='absolute top-[15%] right-[11%] left-[10%] block rotate-[-.6deg] drop-shadow-[0_1px_1.5px_rgba(40,20,5,.3)]'>
-                  <Surface texture='fine' tint='#f3ead6' aged={0.22} clip={cutTopRight('5cqw')}>
-                    <span className='absolute inset-0 border border-[#c9a55a]/35' />
-                    <span className='flex flex-col items-center gap-[2cqw] px-[5cqw] py-[5cqw] text-center [filter:url(#dp-type)]'>
-                      <span className='font-mono text-[2.3cqw] tracking-[.24em] uppercase'>{t('dp.hero.office')}</span>
-                      <span className='block h-px w-full bg-[#17120d]' />
-                      <span
-                        className={cn(
-                          'block leading-[1]',
-                          zh
-                            ? 'font-serif-sc text-[15cqw] font-black tracking-[.04em]'
-                            : 'font-heading text-[13.6cqw] font-semibold tracking-[-.02em]',
-                        )}
-                      >
-                        {t('deadpan.name')}
-                      </span>
-                      <span className='font-heading text-[3.6cqw] tracking-[.5em]'>{t('deadpan.english')}</span>
-                      <span className='block h-[4px] w-full border-y border-[#17120d]' />
-                      <span className='font-mono text-[2.3cqw] tracking-[.2em]'>CASE FILE 001—2026</span>
-                    </span>
-                  </Surface>
-                  <FoldedCorner corner='top-right' size='5cqw' tint='#e9dcc0' />
-                </span>
-
-                {/* 机密章：缺墨斑驳 */}
-                <span
-                  className='absolute bottom-[13%] left-[10%] rotate-[-8deg] border-[0.8cqw] px-[2.4cqw] py-[1cqw] font-serif-sc text-[6.4cqw] font-black tracking-[.2em] opacity-90 mix-blend-multiply [filter:url(#dp-ink)]'
-                  style={{ borderColor: RED, color: RED }}
-                >
-                  机密
-                </span>
-
-                <StringTie />
-              </Surface>
-              <FoldedCorner corner='bottom-right' size='9cqw' tint='#efd49e' />
-              {flips > 0 ? (
-                <span className='pointer-events-none absolute inset-0 animate-flip-shade bg-black opacity-0' />
-              ) : null}
-            </span>
-
-            {/* 封面内侧 */}
-            <span className='absolute inset-0 block [backface-visibility:hidden] [transform:rotateY(180deg)]'>
-              <Surface texture='cardboard' tint='#d6b173' aged={0.34} className='size-full'>
-                <span className='absolute top-[10%] left-[12%] rotate-[-6deg] border-[0.6cqw] border-[#842219]/60 px-[2cqw] py-[1cqw] font-serif-sc text-[3.6cqw] font-bold tracking-[.2em] text-[#842219]/60 [filter:url(#dp-ink)]'>
-                  {t('dp.hero.office')}
-                </span>
-                <span className='absolute right-[6%] bottom-[5%] font-mono text-[2.6cqw] tracking-[.2em] text-[#17120d]/60 uppercase'>
-                  ← {t('dp.desk.close')}
-                </span>
-              </Surface>
-              {flips > 0 ? (
-                <span className='pointer-events-none absolute inset-0 animate-flip-shade bg-black opacity-0' />
-              ) : null}
-            </span>
+            <CoverFace side='front' segment='edge'>
+              <CoverFront />
+            </CoverFace>
+            <CoverFace side='back' segment='edge'>
+              <CoverBack />
+            </CoverFace>
           </span>
         </button>
       </div>

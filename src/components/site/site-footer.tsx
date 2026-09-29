@@ -154,7 +154,10 @@ export function SiteFooter() {
 
   return (
     <footer ref={root} className='sticky bottom-0 z-0 overflow-hidden bg-[oklch(0.12_0.008_60)]'>
-      <div data-footer-inner className='flex flex-col px-[clamp(1.25rem,4vw,4.5rem)] pt-[clamp(4rem,9vw,8rem)]'>
+      <div
+        data-footer-inner
+        className='flex flex-col px-[clamp(1.25rem,4vw,4.5rem)] pt-[clamp(4rem,9vw,8rem)] pb-[clamp(1.25rem,4vw,4.5rem)]'
+      >
         <div className='grid gap-14 lg:grid-cols-[1.2fr_1fr]'>
           <p className='max-w-[14ch] font-heading text-[clamp(2.2rem,5vw,4.6rem)] leading-[1] tracking-[-.03em]'>
             {t('hero.words')} <em className='text-accent'>{t('hero.choices')}</em>

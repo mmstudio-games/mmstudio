@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import finePaper from '@/assets/textures/fine-paper.webp'
-import { matches, REDUCED_MOTION } from '@/hooks/use-media-query'
+import { matches, REDUCED_MOTION, useFinePointer } from '@/hooks/use-media-query'
 import { markIntroDone } from '@/lib/intro'
 
 const SEEN_KEY = 'mm-intro-seen'
@@ -25,7 +25,25 @@ function shouldShow() {
 
 function PreloaderScreen({ onDone }: { onDone: () => void }) {
   const { t } = useTranslation()
+  const fine = useFinePointer()
   const root = useRef<HTMLDivElement>(null)
+  const enterButton = useRef<HTMLButtonElement>(null)
+  const timelineRef = useRef<gsap.core.Timeline | null>(null)
+  const idle = useRef<gsap.core.Tween | null>(null)
+  const [ready, setReady] = useState(false)
+  const entered = useRef(false)
+
+  // 定影后停住：按钮获得焦点，回车、空格与整屏点击都可进站。
+  useEffect(() => {
+    if (ready) enterButton.current?.focus({ preventScroll: true })
+  }, [ready])
+
+  const enter = () => {
+    if (!ready || entered.current) return
+    entered.current = true
+    idle.current?.kill()
+    timelineRef.current?.resume()
+  }
 
   useGSAP(
     () => {
@@ -100,25 +118,46 @@ function PreloaderScreen({ onDone }: { onDone: () => void }) {
         .to('[data-roomlight]', { opacity: 1, duration: 0.25, ease: 'power2.out' }, '<0.05')
         .to('[data-paper]', { backgroundColor: PAPER_WHITE, duration: 0.35, ease: 'power2.out' }, '<')
         .to(warp, { attr: { scale: 0 }, duration: 0.4 }, '<')
+        // 停住：显出「点击进入」，等访客点击后再进站；等待时液面反光偶尔掠过。
+        .fromTo(
+          '[data-enter]',
+          { autoAlpha: 0, y: 12 },
+          { autoAlpha: 1, y: 0, duration: 0.8, ease: 'expo.out' },
+          '+=0.15',
+        )
+        .add(() => {
+          setReady(true)
+          idle.current = gsap.fromTo(
+            '[data-sheen]',
+            { xPercent: -120 },
+            { xPercent: 120, duration: 2.2, ease: 'sine.inOut', repeat: -1, repeatDelay: 2.6 },
+          )
+        }, '<0.2')
+        .addPause()
         // 幕布带弧度上拉，首屏入场同时开始。
-        .to('[data-corner]', { autoAlpha: 0, duration: 0.3 }, '+=0.4')
+        .to('[data-enter]', { autoAlpha: 0, y: -8, duration: 0.3, ease: 'power2.in' })
+        .to('[data-corner]', { autoAlpha: 0, duration: 0.3 }, '<')
         .add(markIntroDone)
         .set('[data-room]', { autoAlpha: 0 })
         .to('[data-curtain]', { attr: { d: 'M0 0 H100 V42 Q50 70 0 42 Z' }, duration: 0.55, ease: 'power3.in' }, '<')
         .to('[data-curtain]', { attr: { d: 'M0 0 H100 V0 Q50 0 0 0 Z' }, duration: 0.6, ease: 'power3.out' })
 
-      return () => slosh.kill()
+      timelineRef.current = timeline
+      return () => {
+        slosh.kill()
+        idle.current?.kill()
+      }
     },
     { scope: root },
   )
 
   return (
-    <div ref={root} aria-hidden className='fixed inset-0 z-[100] text-foreground'>
+    <div ref={root} className='fixed inset-0 z-[100] text-foreground'>
       <svg aria-hidden='true' viewBox='0 0 100 100' preserveAspectRatio='none' className='absolute inset-0 size-full'>
         <path data-curtain d='M0 0 H100 V100 Q50 100 0 100 Z' style={{ fill: 'var(--background)' }} />
       </svg>
 
-      <div data-room className='absolute inset-0 overflow-hidden bg-background'>
+      <div data-room aria-hidden className='absolute inset-0 overflow-hidden bg-background'>
         <span
           data-lamp
           className='absolute top-0 left-1/2 h-2.5 w-28 -translate-x-1/2'
@@ -265,12 +304,34 @@ function PreloaderScreen({ onDone }: { onDone: () => void }) {
             </p>
           </div>
         </div>
+
+        {/* 定影后出现的进站提示 */}
+        <p
+          data-enter
+          className='invisible absolute bottom-[clamp(4.5rem,13svh,8.5rem)] left-1/2 flex -translate-x-1/2 flex-col items-center gap-2.5 font-mono text-[.7rem] tracking-[.32em] whitespace-nowrap text-[#f3e9d8] uppercase'
+        >
+          <span className='flex items-center gap-3'>
+            <span className='size-1.5 animate-pulse bg-[#f3e9d8] shadow-[0_0_12px_rgba(243,233,216,.8)]' />
+            {fine ? t('intro.enter') : t('intro.tap')}
+          </span>
+          <span className='block h-px w-24 bg-gradient-to-r from-transparent via-[#f3e9d8]/60 to-transparent' />
+        </p>
       </div>
+
+      {/* 整屏按钮：定影前禁用，之后可点击，也可用回车、空格 */}
+      <button
+        ref={enterButton}
+        type='button'
+        disabled={!ready}
+        aria-label={t('intro.label')}
+        onClick={enter}
+        className='absolute inset-0 size-full cursor-default outline-none enabled:cursor-pointer'
+      />
     </div>
   )
 }
 
-/** 每个会话首次进入时的加载页「暗室显影」：安全灯下字标在相纸上显影，关灯定影后幕布弧形上拉。 */
+/** 每个会话首次进入时的加载页「暗室显影」：安全灯下字标在相纸上显影，关灯定影后停住，点击后幕布弧形上拉进站。 */
 export function Preloader() {
   const [visible, setVisible] = useState(shouldShow)
 

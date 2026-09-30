@@ -57,28 +57,29 @@ function CaseFileCover({ stamped }: { stamped: boolean }) {
       <div className='absolute aspect-[.72] w-[min(58%,360px)] -translate-x-2 rotate-[-4deg] border border-[#7c6545]/60 bg-[#dccaa6] shadow-[0_20px_50px_rgba(0,0,0,.35)] transition-transform duration-700 ease-out-expo group-hover/file:-translate-x-8 group-hover/file:rotate-[-8deg]' />
       <div
         ref={file}
-        className="relative aspect-[.72] w-[min(58%,360px)] border border-[#7c6545] bg-[linear-gradient(135deg,#f5efdf,#e4d5b8)] p-6 text-[#261e16] shadow-[18px_26px_60px_rgba(0,0,0,.45)] [transform-style:preserve-3d] after:pointer-events-none after:absolute after:inset-0 after:bg-[repeating-linear-gradient(0deg,transparent_0_5px,rgba(55,40,24,.05)_6px)] after:opacity-30 after:content-['']"
+        className="@container relative aspect-[.72] w-[min(58%,360px)] border border-[#7c6545] bg-[linear-gradient(135deg,#f5efdf,#e4d5b8)] p-[clamp(.9rem,4.3vw,1.5rem)] text-[#261e16] shadow-[18px_26px_60px_rgba(0,0,0,.45)] [transform-style:preserve-3d] after:pointer-events-none after:absolute after:inset-0 after:bg-[repeating-linear-gradient(0deg,transparent_0_5px,rgba(55,40,24,.05)_6px)] after:opacity-30 after:content-['']"
       >
-        <div className='flex justify-between border-b-2 border-current pb-3 font-mono text-[.58rem] leading-none font-bold tracking-[.12em]'>
+        <div className='flex justify-between gap-2 border-b-2 border-current pb-3 font-mono text-[clamp(.45rem,3.2cqw,.58rem)] leading-none font-bold tracking-[.12em] whitespace-nowrap'>
           <span>CASE FILE</span>
           <span>001—2026</span>
         </div>
         <div
           className={cn(
-            'absolute top-20 right-6 border-2 border-[#8f2f21] p-2 text-center font-serif-sc leading-[1.1] font-bold text-[#8f2f21] transition-[scale,rotate,opacity] duration-500 ease-[cubic-bezier(.2,1.5,.4,1)]',
+            'absolute top-[calc(3rem+8cqw)] right-[clamp(.9rem,4.3vw,1.5rem)] border-2 border-[#8f2f21] p-[2.2cqw] text-center font-serif-sc text-[max(.7rem,4.4cqw)] leading-[1.1] font-bold text-[#8f2f21] transition-[scale,rotate,opacity] duration-500 ease-[cubic-bezier(.2,1.5,.4,1)]',
             stamped ? 'scale-100 rotate-[8deg] opacity-90' : 'scale-[2.4] rotate-[-14deg] opacity-0',
           )}
           style={{ transitionDelay: stamped ? '450ms' : '0ms' }}
         >
           机<br />密
         </div>
-        <p className='mt-24 font-serif-sc text-[clamp(2.6rem,4.4vw,4.2rem)] leading-none font-bold tracking-[.12em] [writing-mode:vertical-rl] min-[601px]:mt-28'>
+        {/* 字号与位置按封面宽度（cqw）缩放：书名保持一列，DEADPAN 不出纸面 */}
+        <p className='mt-[14cqw] font-serif-sc text-[16cqw] leading-none font-bold tracking-[.12em] whitespace-nowrap [writing-mode:vertical-rl]'>
           积案拂尘
         </p>
-        <p className='absolute right-6 bottom-16 origin-bottom-right rotate-90 font-heading text-[1.6rem] tracking-[.08em]'>
+        <p className='absolute right-[5cqw] bottom-[15cqw] font-heading text-[7.5cqw] leading-none tracking-[.08em] whitespace-nowrap [writing-mode:vertical-rl]'>
           DEADPAN
         </p>
-        <div className='absolute bottom-6 left-6 font-mono text-[.6rem] leading-[1.2] font-bold tracking-[.14em] text-[#8f2f21]'>
+        <div className='absolute bottom-[clamp(.9rem,4.3vw,1.5rem)] left-[clamp(.9rem,4.3vw,1.5rem)] font-mono text-[clamp(.5rem,3.2cqw,.6rem)] leading-[1.2] font-bold tracking-[.14em] text-[#8f2f21]'>
           ACTIVE
           <br />
           ARCHIVE

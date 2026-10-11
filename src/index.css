@@ -79,6 +79,12 @@ html[data-stage="deadpan"] {
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  /* 积案拂尘页的新闻纸、墨与印泥（第十二轮），与木刻着色的取色一致。 */
+  --color-paper: #e6cfaa;
+  --color-paper-light: #f1e2c6;
+  --color-paper-deep: #d3b98d;
+  --color-ink: #17120d;
+  --color-seal: #9e261a;
   --radius-sm: 0rem;
   --radius-md: 0rem;
   --radius-lg: 0rem;

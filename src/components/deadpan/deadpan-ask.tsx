@@ -68,7 +68,7 @@ export function DeadpanAsk() {
       className='grid gap-14 bg-[#15100b] px-[clamp(1.25rem,4vw,4.5rem)] py-[clamp(6rem,11vw,10rem)] lg:grid-cols-[1fr_minmax(0,40rem)] lg:gap-[6vw]'
     >
       <div className='flex flex-col gap-10'>
-        <SectionLabel index='02' label={`${t('dp.chapters.ask')} / ${t('deadpan.meta1')}`} />
+        <SectionLabel index='03' label={`${t('dp.chapters.ask')} / ${t('deadpan.meta1')}`} />
         <h2
           id='dp-ask-title'
           className='font-serif-sc text-[clamp(2.8rem,5.6vw,5.4rem)] leading-[1.05] font-black tracking-[.02em] text-balance'

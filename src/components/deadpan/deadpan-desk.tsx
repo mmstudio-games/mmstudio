@@ -39,13 +39,13 @@ const TEXTURES = {
 } as const
 
 /** 两层阴影：贴桌面的接触影 + 柔和环境影；方向来自台灯（--sx/--sy），抬起量来自 --lift。 */
-const SHADOW =
+export const SHADOW =
   'drop-shadow(calc(var(--sx, 3) * .16px) calc(var(--sy, 5) * .16px) 1px rgba(20,10,4,.62)) drop-shadow(calc(var(--sx, 3) * (1px + var(--lift) * 1.4px)) calc(var(--sy, 5) * (1px + var(--lift) * 1.4px)) calc(7px + var(--lift) * 18px) rgba(20,10,4,.42))'
 
 /** 折角：裁掉一个角的三角形。 */
-const cutBottomRight = (size: string) =>
+export const cutBottomRight = (size: string) =>
   `polygon(0 0, 100% 0, 100% calc(100% - ${size}), calc(100% - ${size}) 100%, 0 100%)`
-const cutTopRight = (size: string) => `polygon(0 0, calc(100% - ${size}) 0, 100% ${size}, 100% 100%, 0 100%)`
+export const cutTopRight = (size: string) => `polygon(0 0, calc(100% - ${size}) 0, 100% ${size}, 100% 100%, 0 100%)`
 
 /** 撕边：确定性伪随机的锯齿多边形。 */
 function tornEdge(seed: number, amplitude = 1.4) {
@@ -62,12 +62,12 @@ function tornEdge(seed: number, amplitude = 1.4) {
   for (let i = steps - 1; i >= 1; i--) points.push(`${random() * amplitude * 0.5}% ${(i / steps) * 100}%`)
   return `polygon(${points.join(',')})`
 }
-const CLIPPING_EDGE = tornEdge(7)
-const TAG_SHAPE = 'polygon(20% 0, 80% 0, 100% 11%, 100% 100%, 0 100%, 0 11%)'
-const RINGS = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i']
+export const CLIPPING_EDGE = tornEdge(7)
+export const TAG_SHAPE = 'polygon(20% 0, 80% 0, 100% 11%, 100% 100%, 0 100%, 0 11%)'
+export const RINGS = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i']
 
 /** 共用的 SVG 滤镜与渐变：纸张毛边、印章缺墨、印刷油墨不均、金属。 */
-function DeskDefs() {
+export function DeskDefs() {
   return (
     <svg aria-hidden='true' width='0' height='0' className='absolute'>
       <defs>
@@ -111,7 +111,7 @@ function DeskDefs() {
  * 纸面：扫描材质 × 物件颜色，叠加边缘陈旧与朝向台灯的明暗（--la）。
  * rough 为真时底层加毛边滤镜；clip 裁出撕边、折角等外形（会一并裁掉子元素）。
  */
-function Surface({
+export function Surface({
   texture,
   tint,
   aged = 0.28,
@@ -154,7 +154,15 @@ function Surface({
 }
 
 /** 折起的角：翻过来的纸背，靠折线一侧更暗。 */
-function FoldedCorner({ corner, size, tint }: { corner: 'bottom-right' | 'top-right'; size: string; tint: string }) {
+export function FoldedCorner({
+  corner,
+  size,
+  tint,
+}: {
+  corner: 'bottom-right' | 'top-right'
+  size: string
+  tint: string
+}) {
   const bottom = corner === 'bottom-right'
   return (
     <span
@@ -175,7 +183,17 @@ function FoldedCorner({ corner, size, tint }: { corner: 'bottom-right' | 'top-ri
 }
 
 /** 红笔画出的线：进入 drawn 状态后按 delay 依次描出。 */
-function PenStroke({ d, drawn, delay, width = 1.6 }: { d: string; drawn: boolean; delay: number; width?: number }) {
+export function PenStroke({
+  d,
+  drawn,
+  delay,
+  width = 1.6,
+}: {
+  d: string
+  drawn: boolean
+  delay: number
+  width?: number
+}) {
   return (
     <path
       d={d}
@@ -192,7 +210,7 @@ function PenStroke({ d, drawn, delay, width = 1.6 }: { d: string; drawn: boolean
   )
 }
 
-function PaperClip({ className }: { className: string }) {
+export function PaperClip({ className }: { className: string }) {
   return (
     <svg
       aria-hidden='true'
@@ -211,7 +229,7 @@ function PaperClip({ className }: { className: string }) {
 }
 
 /** 红线（麻绳质感）：底色一道、扭纹一道。 */
-function Twine({ d }: { d: string }) {
+export function Twine({ d }: { d: string }) {
   return (
     <>
       <path d={d} fill='none' stroke='#6e2014' strokeWidth='2.4' strokeLinecap='round' />
@@ -749,18 +767,18 @@ export function InvestigationDesk({ revealed, onReveal }: { revealed: boolean; o
       arrow: 'M32 48 L40 52 L40 43',
     },
     {
-      key: 'ask',
-      number: '02',
-      className: 'top-[89%] left-[5%]',
-      path: 'M58 -34 C 70 -44 72 -58 64 -72',
-      arrow: 'M58 -64 L64 -72 L70 -63',
-    },
-    {
       key: 'deduce',
-      number: '03',
+      number: '02',
       className: 'top-[41%] left-[14%]',
       path: 'M40 8 C 30 -6 14 -8 4 -22',
       arrow: 'M4 -12 L4 -22 L12 -16',
+    },
+    {
+      key: 'ask',
+      number: '03',
+      className: 'top-[89%] left-[5%]',
+      path: 'M58 -34 C 70 -44 72 -58 64 -72',
+      arrow: 'M58 -64 L64 -72 L70 -63',
     },
     {
       key: 'publish',
@@ -824,10 +842,10 @@ export function InvestigationDesk({ revealed, onReveal }: { revealed: boolean; o
         className='top-[7%] left-[5%] hidden w-[11%] md:block'
         depth={1}
         tilt={-9}
-        label={`03 ${t('dp.chapters.deduce')}`}
+        label={`02 ${t('dp.chapters.deduce')}`}
         revealed={revealed}
         onReveal={onReveal}
-        onClick={(item) => travel({ targetId: 'dp-board-title', label: `03 ${t('dp.chapters.deduce')}`, from: item })}
+        onClick={(item) => travel({ targetId: 'dp-board-title', label: `02 ${t('dp.chapters.deduce')}`, from: item })}
         extra={
           <svg
             aria-hidden='true'
@@ -868,10 +886,10 @@ export function InvestigationDesk({ revealed, onReveal }: { revealed: boolean; o
         className='top-[53%] left-[3.5%] hidden w-[15%] md:block'
         depth={0.8}
         tilt={5}
-        label={`02 ${t('dp.chapters.ask')}`}
+        label={`03 ${t('dp.chapters.ask')}`}
         revealed={revealed}
         onReveal={onReveal}
-        onClick={(item) => travel({ targetId: 'dp-ask-title', label: `02 ${t('dp.chapters.ask')}`, from: item })}
+        onClick={(item) => travel({ targetId: 'dp-ask-title', label: `03 ${t('dp.chapters.ask')}`, from: item })}
         extra={
           <span aria-hidden className='absolute inset-x-[6cqw] -top-[3cqw] flex justify-between'>
             {RINGS.map((ring) => (

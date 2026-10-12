@@ -10,7 +10,7 @@
 - [x] 临时断言脚本 `/tmp/mmstudio-preloader-qa/regression.cjs`：线上旧版稳定复现快速点击卡死；本地生产构建通过刚启用即连续点击、定影前点击不响应、等待后点击、英文回车、空格、390×844 轻触、减少动态效果、刷新跳过预加载和恢复滚动；无运行时错误。
 - [x] BrowserOS 实际点击本地生产预览，确认加载层撤除、首屏入场与滚动解锁；`bun run lint`、`bun run build`、`git diff --check` 通过。构建仍提示现有主包大于 500 KB，本轮未调整分包。
 - [x] 用户授权提交并创建 PR（2026-10-12）。
-- [ ] 提交修复、推送独立分支并创建 PR。
+- [x] 提交修复、推送独立分支 `fix/preloader-entry-race` 并创建 [PR #5](https://github.com/mmstudio-games/mmstudio/pull/5)。
 - [ ] 合并与部署需另行明确授权。
 
 ## P0——本轮：一份会动的《奇案特刊》（积案拂尘页第十二轮）

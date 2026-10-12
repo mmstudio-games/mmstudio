@@ -125,15 +125,15 @@ function PreloaderScreen({ onDone }: { onDone: () => void }) {
           { autoAlpha: 1, y: 0, duration: 0.8, ease: 'expo.out' },
           '+=0.15',
         )
-        .add(() => {
+        // 先暂停再启用按钮，避免提前点击后又被后面的暂停点拦住。
+        .addPause('>', () => {
           setReady(true)
           idle.current = gsap.fromTo(
             '[data-sheen]',
             { xPercent: -120 },
             { xPercent: 120, duration: 2.2, ease: 'sine.inOut', repeat: -1, repeatDelay: 2.6 },
           )
-        }, '<0.2')
-        .addPause()
+        })
         // 幕布带弧度上拉，首屏入场同时开始。
         .to('[data-enter]', { autoAlpha: 0, y: -8, duration: 0.3, ease: 'power2.in' })
         .to('[data-corner]', { autoAlpha: 0, duration: 0.3 }, '<')

@@ -1,6 +1,7 @@
-import { ArrowUpRight } from 'lucide-react'
+import { ArrowRight, ArrowUpRight } from 'lucide-react'
 import { useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
 
 import { Magnetic } from '@/components/motion/magnetic'
 import { Redacted } from '@/components/motion/redacted'
@@ -118,6 +119,17 @@ export function CaseHgt() {
               render={<a href={HGT_URL} target='_blank' rel='noreferrer' />}
             >
               {t('hgt.play')} <ArrowUpRight data-icon='inline-end' />
+            </Button>
+          </Magnetic>
+          <Magnetic strength={0.2}>
+            <Button
+              size='lg'
+              variant='outline'
+              nativeButton={false}
+              className='border-[#1d1b17]/30 text-[#1d1b17] hover:bg-[#1d1b17]/8'
+              render={<Link to='/games/hgt' />}
+            >
+              {t('hgt.details')} <ArrowRight data-icon='inline-end' />
             </Button>
           </Magnetic>
         </div>

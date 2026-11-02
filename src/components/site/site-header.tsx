@@ -6,16 +6,18 @@ import { Link, NavLink } from 'react-router-dom'
 import { RollText } from '@/components/motion/roll-text'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
-import { GITHUB_URL, HGT_URL } from '@/i18n'
+import { GITHUB_URL } from '@/i18n'
 import { cn } from '@/lib/utils'
 import { usePreferencesStore } from '@/stores/preferences-store'
 
-export const NAV_ITEMS = [
+type NavItem = { to: string; label: string } | { href: string; label: string }
+
+export const NAV_ITEMS: readonly NavItem[] = [
   { to: '/', label: 'nav.home' },
   { to: '/games/deadpan', label: 'nav.deadpan' },
-  { href: HGT_URL, label: 'nav.hgt' },
+  { to: '/games/hgt', label: 'nav.hgt' },
   { to: '/news', label: 'nav.news' },
-] as const
+]
 
 export function Wordmark() {
   const { t } = useTranslation()
@@ -60,6 +62,7 @@ export function SiteHeader() {
 
   return (
     <header
+      data-site-header
       className={cn(
         'sticky top-0 z-50 grid h-[72px] grid-cols-[1fr_auto] items-center border-b px-[clamp(1.25rem,4vw,4.5rem)] transition-[translate,background-color,border-color] duration-700 ease-out-expo md:grid-cols-[1fr_auto_1fr]',
         hidden && '-translate-y-full',

@@ -8,6 +8,7 @@ import { matches, REDUCED_MOTION } from '@/hooks/use-media-query'
 const LABELS: Record<string, string> = {
   '/': 'nav.home',
   '/games/deadpan': 'nav.deadpan',
+  '/games/hgt': 'nav.hgt',
   '/news': 'nav.news',
   '/about': 'nav.about',
   '/contact': 'nav.contact',

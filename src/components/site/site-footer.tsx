@@ -169,7 +169,8 @@ export function SiteFooter() {
             </Column>
             <Column title={t('footer.site')}>
               <FooterLink to='/'>{t('nav.home')}</FooterLink>
-              <FooterLink to='/games/deadpan'>{t('deadpan.details')}</FooterLink>
+              <FooterLink to='/games/deadpan'>{`${t('nav.deadpan')} · ${t('deadpan.details')}`}</FooterLink>
+              <FooterLink to='/games/hgt'>{`${t('nav.hgt')} · ${t('hgt.details')}`}</FooterLink>
               <FooterLink to='/news'>{t('nav.news')}</FooterLink>
             </Column>
             <Column title={t('footer.elsewhere')}>

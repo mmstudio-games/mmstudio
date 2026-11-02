@@ -20,3 +20,8 @@ export function onIntroDone(listener: () => void) {
     listeners.delete(listener)
   }
 }
+
+/** 预加载是否已经结束。 */
+export function isIntroDone() {
+  return done
+}

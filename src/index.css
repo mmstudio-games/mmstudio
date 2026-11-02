@@ -55,6 +55,22 @@ html[data-stage="deadpan"] {
   --input: oklch(0.9 0.03 85 / 16%);
 }
 
+/* 海龟汤页：页头跟着纸面变成米白底墨字；第 0 幕藏起页头，终幕底色反转后恢复暗色。 */
+html[data-hgt-chrome="hidden"] [data-site-header] {
+  translate: 0 -100%;
+}
+html[data-stage="hgt"]:not([data-hgt-tone="dark"]) [data-site-header] {
+  --background: #f2efe6;
+  --foreground: #0d0b09;
+  --muted-foreground: rgb(13 11 9 / 62%);
+  --border: rgb(13 11 9 / 14%);
+  --accent: #b3261e;
+  color: var(--foreground);
+}
+[data-collapsing] [data-pool-card] {
+  visibility: hidden !important;
+}
+
 @theme inline {
   --font-sans: "Noto Sans Variable", "Noto Sans SC", sans-serif;
   --font-heading: "Playfair Display Variable", "Noto Serif SC Variable", "Noto Serif SC", serif;
@@ -132,5 +148,27 @@ html[data-stage="deadpan"] {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* 第二幕：被裁为「无关」的猜测像断电一样闪几下后熄灭。 */
+@keyframes hgt-power-off {
+  0% {
+    opacity: 1;
+  }
+  20% {
+    opacity: 0.15;
+  }
+  35% {
+    opacity: 0.8;
+  }
+  55% {
+    opacity: 0.05;
+  }
+  70% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0;
   }
 }
